@@ -1,1 +1,1 @@
-Link to my web site: [CLICK](ziread.github.io)
+Link to my web site: <https://ziread.github.io>
