@@ -1,0 +1,369 @@
+Раздел про ALT Linux
+
+Если с X11 KDE не пашет Win + L когда приоритетная раскладка русская
+nano ~/.config/autostart/setxkbmap-fix.desktop
+
+[Desktop Entry]
+Type=Application
+Name=Set XKB Map Fix
+Comment=Resets the XKB map to fix the Win+L shortcut with Russian layout
+Exec=setxkbmap -layout "us,ru" -variant ",winkeys" -option "grp:alt_shift_toggle"
+Terminal=false
+
+chmod +x ~/.config/autostart/setxkbmap-fix.desktop
+setxkbmap -layout "us,ru" -variant ",winkeys" -option "grp:alt_shift_toggle"
+
+Установка KDE
+apt-get install kde5 kf5-plasma-workspace kde5-network-manager-nm kde5-krfb kde5-printing kde5-scanning kde5-connect
+
+Если битрикс просто не открывет от пользователя
+rm -f /home/<username>/.bxd/chromium/SingletonLock
+rm -f /home/<username>/.bxd/chromium/SingletonCookie
+rm -f /home/<username>/.bxd/chromium/SingletonSocket
+
+Если после переименования hostname Яндере Браузер не запускается
+$ rm -rf ~/.config/yandex-browser/SingletonLock
+
+
+Тех. поддержка - ck_support@ck.krasnodar.ru
+WIKI - https://wiki.altlinux.ru/
+База знаний - https://docs.altlinux.org/ru-RU/index.htm
+unofficial wiki - https://alt-gnome.wiki/
+official wiki - https://www.altlinux.org/VNC
+
+По вопросам функционирования и наполнения локального репозитория необходимо обратиться в службу сопровождения РМС ОГВ по адресу электронной почты support@krasnodar.ru. Для получения сторонних обновлений из информационнотелекоммуникационной сети "Интернет" необходимо направить на электронный почтовый ящик службы сопровождения РМС ОГВ обращение со следующим содержанием: IP-адрес ВМ – источника; IP-адрес и порты доступа назначения к информационной системе (далее — ИС); цель предоставления доступа; временной промежуток организации доступа к назначению ИС. Дополнительно учреждение просит оказать содействие и д - https://git.ogvkk.ru/explore/repos.
+
+Установка ALT Linux
+До входа в ОС:
+1. Пароль от загрузчика: [пароль из базы знаний]
+2. Обратить внимание на разметку разделов, выделить под корень весь диск.
+3. Настройка сети в подсеть 192.168.111.X
+4. Пароль сисадмина (root): [пароль из базы знаний]
+5. Новая учетка: admn: пароль из базы знаний
+
+После входа в ОС под admn:
+1. Настройка сети опять (Если не сохранилась после установки)
+2. Сменить hostname: В терминале (su root) - nano /etc/hostname
+3. В терминале (su root): mc - иди по пути /etc/apt/source.list.d/
+Через тот же mc редактируем файлы:
+altsp.list - раскоментирувываем нижний блок репозиториев (http)
+(этого может не быть) source.list - коментируем одну строку в нем
+4.  В терминале (su root) apt-get update & apt-get install sudo nano yandex-browser-stable newt52 sane sane-airscan x11vnc-service
+5. Установка VNC x11vnc (su root):
+chkconfig x11vnc on
+service x11vnc start
+mkdir /etc/vnc
+x11vnc --storepasswd
+touch /var/log/x11vnc.log
+nano /lib/systemd/system/x11vnc.service
+
+[Unit]
+Description=X11VNC Server
+After=prefdm.service
+
+[Service]
+User=root
+Restart=on-failure
+ExecStart=/usr/bin/x11vnc -auth /var/run/lightdm/root/:0 -dontdisconnect -notruecolor -noxfixes -shared -forever -rfbport 5900 -oa /var/log/x11vnc.log -rfbauth /root/.vnc/passwd
+
+[Install]
+WantedBy=graphical.target
+
+systemctl daemon-reload
+systemctl start x11vnc.service
+systemctl enable x11vnc.service
+6. В терминале (su root) nano /etc/hosts - Добавить следующий текст:
+192.168.100.1 Server-2015
+192.168.100.2 Server-2016
+192.168.100.100 Server-2017
+192.168.100.249 Server-2024
+5. В верней панели: Система - Параметры - Интеренет и связь - Общий доступ к рабочему столу
+ - Включаем доступ, отключаем запрос на подключение, указываем пароль: [пароль рабочего стола]. Для приминения требуется перезапуск сессии пользовтеля, для каждого пользователя включается отдельно.
+6. Создание учетки: В верхней панели: Система - Центр управления - Центр управления системой (с паролем root) - Режим эксперта (сверху кнопка). Пользователи - Локальные учетные заПИСИ. Новая учетка запись - Пиши логин - Создать - Задай пароль и группы(если нужно) - Примернить (кнопка внизу), там же можно удалить(По необходимости).
+7. Крипто-Хуипто: Копировать версию RPM (в обмене Солодкого) на комп и запустить скрипт install_gui.sh (собственно процесc идентичен аналогичному на Astra Linux). Расширение в браузер ставится из магазина вручную
+8. Зайти на localhost:8080 под root - Группы - добавить в группу wheel - пользователя.
+9. Установить R7: Взять пакет (в обмене Солодкого) - из терминала(su root): apt-get install ./<packege name> - Активировать файлом лицензии как обычно, тем же самым (да, он подходит к новой версии)
+10. Установить 1С: Взять пакет (в обмене Солодкого) - из терминала(su root): apt-get install ./<packege name> - Добавить необходимые базы
+11. Установить Bitrix24: Взять пакет (в обмене Солодкого) - из терминала(su root): apt-get install ./<packege name>
+12. Настройка сканирования: Установить naps2: Взять пакет (в обмене Солодкого) - из терминала(su root): apt-get install ./<packege name>
+13. Изменить настройку сети на подсеть 192.168.100.Х
+
+После входа под юзверем:
+1. Настройка печати: Зайди в CUPS(localhost:631) - Администрирование - Добавить принтер - Протокол интернет печати (ipp) - socket://<ip-adress> - Скорми ему PPD файл драйвера принтера - После завершения протестируй - Готово.
+2. Поставить расширение в Yandex Browser (если не встало автоматически)
+3. В Yandex Browser создать ссылки на необходимые ресурсы
+4. Создать ярлыки обменов: Правой кнопкой по раб. столу - Создать кнопку запуска - Тип "Расположение" - Название соответствующее - Расположение:
+smb://192.168.100.2/ - Сервер 2016
+smb://192.168.100.222/обмен - Обмен
+smb://192.168.100.222/обмен/<ФИО> - Мой обмен
+5. Помочь войти в учётки пользователя
+
+Раздел про Astra linux
+
+Не работают общие папки:
+mkdir ~/.smb
+sudo ln -s /etc/samba/smb.conf ~/.smb/smb.conf
+echo 'auth "guest" none' > ~/.smb/smbnetfs.conf
+chmod 600 ~/.smb/smbnetfs.conf
+!!!От имени юзера!!!
+
+[демо-ключ удалён] - КриптоПро 5.0.13000 демка
+[просроченный ключ удалён] - КриптоПро 5.0.13000 просрок
+[ключ удалён] - КриптоПро 5.0.13000 пиратский
+
+Установка VNC
+
+Заходим под root'ом!!!
+
+apt install x11vnc
+x11vnc -storepasswd /etc/x11vnc.pass
+nano /lib/systemd/system/x11vnc.service
+
+[Unit]
+Description=Start x11vnc at startup.
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/x11vnc -auth guess -forever -loop -noxdamage -repeat -rfbport 5900 -shared -dontdisconnect -rfbauth /etc/x11vnc.pass -o /var/log/x11vnc.log
+
+[Install]
+WantedBy=multi-user.target
+
+systemctl enable x11vnc.service
+systemctl daemon-reload
+systemctl start x11vnc
+
+Прочие команды:
+
+astra-update -a -r  Обнова системы щоб не поломалося, отлючать перед этим cdrom и debian в /etc/apt/sources
+smbclient -L \\192.168.31.94 -U winusr1 - Образец поиска SMB штук на хосте
+sudo ip route add 192.168.5.0/24 via 192.168.96.3
+apt install pidgin-plugin-pack - Плагины на Pidgin
+sudo update-ca-certificates - Обновления сертификатов удостоверяющих центров
+sudo lspci -k - Просмотр оборудования и связанных модулей ядра и драйверов
+
+Команды КриптоПро Linux:
+
+Посмотреть ключи лицензии - sudo nano /etc/opt/cprocsp/license.ini
+
+Если при удалении упирается в cprocsp-rdr-jacarta-64 -  sudo rm /var/lib/dpkg/info/cprocsp-rdr-jacarta-64.*
+
+Отключение сохранения пароля от контейнера - sudo /opt/cprocsp/sbin/amd64/cpconfig -ini '\config\Parameters' -add long DisableSavedPasswords 1
+
+Смена пароля на контейнер - opt/cprocsp/bin/amd64/csptestf -passwd -cont '<название_контейнера>' -change <новый_пароль> -passwd <старый_пароль>
+
+Просмотр контейнеров - /opt/cprocsp/bin/amd64/csptest -keyset -enum_cont -fqcn -verifyc | iconv -f cp1251
+
+Удаление контейнера - /opt/cprocsp/bin/amd64/csptestf -passwd -cont '<Название контейнера>' -deletek
+
+Просмотр считывателей - /opt/cprocsp/sbin/amd64/cpconfig -hardware reader -view  или /opt/cprocsp/bin/amd64/csptest -enum -info -type PP_ENUMREADERS -flags 32
+
+Установка сертификата в контейнер - /opt/cprocsp/bin/amd64/certmgr -inst -f <Путь к серту> -ask-container
+
+Установить корневой сертификат - /opt/cprocsp/bin/amd64/certmgr -inst -store mRoot -file <ИМЯ СЕРТИФИКАТА>
+
+Установить лицензию - sudo /opt/cprocsp/sbin/amd64/cpconfig –license –set <НОМЕР ЛИЦЕНЗИИ>
+
+Просмотр статуса лицензии - sudo /opt/cprocsp/sbin/amd64/cpconfig -license -view
+
+Просмотр физических хранилищ - /opt/cprocsp/sbin/amd64/cpconfig -hardware reader -view
+
+Удаление из системы физических хранилищ - /opt/cprocsp/sbin/amd64/cpconfig -hardware reader -del FLASH
+
+Если наебнулся libc
+
+apt-get download libc-bin
+dpkg -x libc-bin * .deb unpackdir/
+sudo cp unpackdir/sbin/ldconfig /sbin/
+sudo apt-get install --reinstall libc-bin
+sudo apt-get install -y
+sudo apt-get -f install
+sudo dpkg --configure -r
+
+Если CUPS грузит ЦП в 100 и всё виснет
+
+wget https://wiki.astralinux.ru/kb/files/471028131/471028132/2/1778221337746/cups_fix.tar.gz
+tar -xf ./cups_fix.tar.gz
+cd ./cups+ci
+sudo apt install -y ./*deb
+sudo usermod -a -G lp,lpadmin <username>
+sudo systemctl reboot
+
+Убить беспровод
+
+wget https://ziread.github.io/Disable_Wireless_Astra.sh
+sudo chmod +x Disable_Wireless_Astra.sh
+sudo ./Disable_Wireless_Astra.sh
+!!Потребуется перезагрезка!!
+
+CUPS ругается на отсутствие конфига
+
+sudo apt install syslog-ng-mod-astra
+
+Яндере браузер просто не открывается после обновы
+
+sudo chown root:root /opt/yandex/browser/yandex_browser-sandbox
+sudo chmod 4755 /opt/yandex/browser/yandex_browser-sandbox
+
+Если Chromium Gost ведет себя странно
+
+Скачай и поставь последний релиз с Оф GitHub:
+https://github.com/deemru/chromium-gost/releases
+
+Если ничего не печатается в системных окнах
+
+sudo chmod 644 /etc/X11/trusted
+sudo chmod 644 /etc/X11/fly-dm/fly-dmrc
+
+Если после логина только окно терминала
+
+su root
+sudo nano /home/<user>/.dmrc
+Там будет 2 строки. То, что в квадратных скобках не трогаем. Скорее всего, значение второй строки будет session=failsafe. Вот значение во второй меняем на fly. Чтобы было session=fly
+
+Если система лагает без загрузки ЦП, ОЗУ и ПЗУ
+
+Вариант 1:
+sudo systemctl start systemd-resolved
+sudo systemctl enable systemd-resolved
+Вариант 2:
+Проверить подключение к сети, возможно речь о работе с интернетом и общими папками
+
+Установка Astra linux
+1)Установка ОС
+
+При первоначальной установке создаётся учетная запись "admn" с паролем из Базы знаний
+Метод разметки "Авто - использовать весь диск"
+При выборе дополнительного ПО обязательно отмечаем: SSH, Средства виртуализации и Ядро Hardened в дополнение ко всем выбранным.
+ Устанавливаем систему на весь диск без разделения.
+Выбираем - Максимальный уровень защищенности "Смоленск"
+ Устанавливаем GRUB и берем пароль из базы знаний
+
+2)Заходим в пользователя admn:
+
+Создать пароль для root ( sudo passwd root )
+Создать пользователя ( sudo adduser USER )
+Панель управления>Настройки GRUB> выбрать ОС по умолчанию и убрать тайминг на запуск
+Панель управления>Управление политиками безопасности>Пользователи>root>Привилегии- выдать все привилегии для root.
+Панель управления>Управление политиками безопасности>Отключить мандатный контроль целостности и перезапустить пк
+Настроить сеть
+Установить VNC
+
+3) Заходим в USER
+
+При установке пакетов выдавать им права ( sudo chmod 777 ) (-R папкам)
+Заходим под админа ( su admn )
+Подключаем репозитории из базы знаний ( sudo nano /etc/apt/sources.list ) (отключаем Debian и CDrom) ctrl+o // ctrl+x
+Обновляемся ( sudo apt-get update  //  sudo apt-get upgrade  \\  sudo apt-get full-upgrade )
+Включить автоматический Numlock ( kate /etc/X11/fly-dm/fly-dmrc  \\  kate /home/USER/.fly/theme/current.themerc ) ( fly-wm --version это работает только на 2.40 +)
+Монтируем образ Astra в cdrom и выдаем права (  sudo mkdir /mnt/astra  \\  sudo mv ПУТЬ/Образ /mnt/astra  \\  sudo chmod 777 Образ  \\  sudo mount Образ /media/cdrom  \\  sudo apt-cdrom –m add )
+Устанавливаем debian-archive-keyring и включаем пакеты Debian
+Устанавливаем  и настраиваем Яндекс Браузер ( sudo apt install yandex-browser-stable )
+Настроить PSI+ и включить уведомления
+Добавить обмены ( smb://192.168.100.2 )
+
+3.1)Установка_КриптоПРО ( https://wiki.astralinux.ru/pages/viewpage.action?pageId=32833902 )
+
+Запустить install_gui.sh и выбрать все кроме kc2
+Установить criptopro-jacarta
+Установить пакеты из ОС ( sudo apt install libccid pcscd libgost-astra )
+Настроить путь
+Установить plugin КриптоПРО
+Установить Jacarta-driver
+Установить лицензию ( sudo /opt/cprocsp/sbin/amd64/cpconfig –license –set НОМЕР ЛИЦЕНЗИИ )
+Установить корневой сертификат ( sudo /opt/cprocsp/bin/amd64/certmgr -inst -store mRoot -file ИМЯ СЕРТИФИКАТА)
+Установить личный сертификат ( /opt/cprocsp/bin/amd64/csptestf -absorb -certs -autoprov ) (sudo /opt/cprocsp/bin/amd64/certmgr -inst -store mca -file Сертификат)
+Установить расширение в браузер
+Перезапустить ПК
+Проверить подпись
+3.2) Устанавливаем HOSTS
+В обмене находим файл HOSTS, заходим в него и меняем vnc на ИМЯ ПК
+Удаляем старый hosts ( sudo rm /etc/hosts )
+И переносим ( sudo mv hosts /etc )
+
+3.3) Установка 1C ( https://forum.astralinux.ru/threads/2348/ )
+
+Зайти в 192.168.100.2/Public/Дистрибутивы/1С/1C Linux/1C_8_3_22_1923
+запустить файл *.run
+Установка требуемых пакетов
+Некоторые пакеты должны быть установлены до начала установки основных пакетов 1С:Предприятие 8.3. Нужно проверить наличие или установить через терминал или установщик следующие пакеты:
+libwebkitgtk-3.0-0
+ttf-mscorefonts-installer
+libfontconfig1
+libgsf-1-114
+libglib2.0-0
+libodbc1
+libmagickwand-6.q16-3
+Установка клиента 1С:Предприятие 8.3
+С помощью терминала или установщика deb-пакетов устанавливается клиент 1С. Рекомендуется устанавливать в следующей очерёдности:
+1) 1c-enterprise83-common;
+2) 1c-enterprise83-common-nls;
+3) 1c-enterprise83-server;
+4) 1c-enterprise83-server-nls;
+5) 1c-enterprise83-client;
+6) 1c-enterprise83-client-nls.
+Перейти в 192.168.100.2/Public/Дистрибутивы/1С/1C Linux и переместить все *1830 в документы и установить
+Для отключения службы сервера 1С нужно выполнить в терминале (sudo systemctl disable srv1cv83)
+Добавить существующие базы данных на сервере 192.168.100.100
+
+3.4) Установить R7 и лицензию
+3.5) Настроить принтер
+Доп. информация:
+Если что-то не устанавливается ( sudo apt --fix-broken install  \\  sudo dpkg --configure -a  \\  sudo apt autoclean  )
+( http://localhost:631  \\  http://192.168.100.3:8080  \\  xmpp.avtobaza-ogv.ru  \\  https://sed.avtobaza-ogv.ru )
+
+Без регистрации обновление не запустится.
+Монтируем образ в /media/cdrom и вводим команду:
+
+sudo apt-cdrom -m add
+
+Происходит регистрация в качестве доверенного локального репозитория с которого потом можно устанавливать программы или обновляться.
+
+sudo mount /папка где лежит образ/orel-current.iso /mnt -t iso9660 -o loop
+
+Размонтировать образ можно так:
+
+ sudo umount /папка где лежит iso файл/orel-current.iso /mnt
+sudo gedit /var/lib/dpkg/status КОГДА ПАКЕТ НЕ НАЙДЕТ!
+
+Раздел про Windows
+
+Удалить каспер, если Юра не дает пароль
+
+Запуск в Безопасном режиме
+В regedit: HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\KasperskyLab\protected\KES10\settings
+Параметр EnablePswrdProtect значение ставим 0
+Параметр OPEP очищаем,  ставляем пустым
+Запуск в Обычном режиме
+Качаем утилиту https://support.kaspersky.ru/kaspersky-for-windows/21.25/install/1464
+Следуя её шагам удаляем всё ПО каспера
+
+Обход входа в учетку Microsoft при установке
+
+Shift + F10 - Открывает консоль
+start ms-cxh:localonly - Принудительный запуск создания локальной учетки
+
+Установка Windows
+1. Поставить систему
+2. Сменить имя ПК
+3. Дать IP из 192.168.111.* диапазона
+4. Установить VNC и Radmin
+5. Запустить обновление системы
+6. Установить драйвера
+7. Создать учетную запись пользователя на ПК
+8. Установить Даллас и применить файл конфигурации с заменяемого ПК
+9. Добавить учётную запись в Даллас
+10. Установить Офис и активировать
+11. 7-Zip, поставить по умолчанию для *.rar и *.zip
+12. Установить КриптоПРО, ввести ключ лицензии
+13. Установить Касперского (192.168.100.249)
+14. Установить 1С, последнюю и 1830 по необходимости, НА УЧЕТНОЙ ЗАПИСИ ПОЛЬЗОВАТЕЛЯ
+15. Установить Миранду и добавить в автозапуск, НА УЧЕТНОЙ ЗАПИСИ ПОЛЬЗОВАТЕЛЯ
+16. Установить Яндекс.Браузер и Chromium Gost, НА УЧЕТНОЙ ЗАПИСИ ПОЛЬЗОВАТЕЛЯ
+17. Установить PDF24 и Adobe Reader
+18. В браузеры установить и проверить расширение КриптоПРО
+19. Дать IP из 192.168.100.* диапазона, изменить в USERGATE
+20. Создать ярлыки обменов
+21. Перенести пароли и закладки из браузеров со старого ПК на новый
+22. Подключить принтер и настроить сканирование как удобно пользователю
