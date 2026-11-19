@@ -16,6 +16,13 @@ setxkbmap -layout "us,ru" -variant ",winkeys" -option "grp:alt_shift_toggle"
 Установка KDE
 apt-get install kde5 kf5-plasma-workspace kde5-network-manager-nm kde5-krfb kde5-printing kde5-scanning kde5-connect
 
+Если нужно посвапаться (SWAP файл)
+Скачай скрипт и следую пунктам его меню, создай файл подкачки. Запускай от имени рута. Ссылка на скрипт: https://ziread.github.io/swapauto_alt.sh
+su -
+wget https://ziread.github.io/swapauto_alt.sh
+sh swapauto_alt.sh
+
+
 Если битрикс просто не открывет от пользователя
 rm -f /home/<username>/.bxd/chromium/SingletonLock
 rm -f /home/<username>/.bxd/chromium/SingletonCookie
