@@ -7,6 +7,7 @@ const categoryMarkers = [
 const instructionMarkers = [
   { prefix: 'Если с X11 KDE', label: 'Проблема Win + L в KDE' },
   { prefix: 'Установка KDE', label: 'Установка KDE' },
+  { prefix: 'Если нужно посвапаться (SWAP файл)', label: 'Создание SWAP файла' },
   { prefix: 'Если битрикс', label: 'Bitrix не открывается' },
   { prefix: 'Если после переименования hostname', label: 'Яндекс.Браузер и hostname' },
   { prefix: 'Тех. поддержка', label: 'Контакты и ссылки' },
