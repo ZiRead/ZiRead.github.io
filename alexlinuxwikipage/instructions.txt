@@ -20,6 +20,7 @@ apt-get install kde5 kf5-plasma-workspace kde5-network-manager-nm kde5-krfb kde5
 Скачай скрипт и следую пунктам его меню, создай файл подкачки. Запускай от имени рута. Ссылка на скрипт: https://ziread.github.io/swapauto_alt.sh
 su -
 wget https://ziread.github.io/swapauto_alt.sh
+chmod +x swapauto_alt.sh
 sh swapauto_alt.sh
 
 
