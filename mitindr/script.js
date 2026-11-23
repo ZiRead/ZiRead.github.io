@@ -7,10 +7,42 @@ function startMusic() {
 }
 
 birthdayMusic.volume = 0.55;
-startMusic();
-window.addEventListener("pointerdown", startMusic, { once: true });
-window.addEventListener("keydown", startMusic, { once: true });
+birthdayMusic.preload = "auto";
 
+function tryPlay() {
+  const p = birthdayMusic.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}
+
+// 1) Пытаемся запустить сразу со звуком
+tryPlay();
+
+// 2) Если браузер запретил — пробуем тихий автоплей,
+//    чтобы элемент уже играл и был готов включить звук по клику
+function tryMutedAutoplay() {
+  birthdayMusic.muted = true;
+  tryPlay();
+}
+
+// 3) Как только пользователь хоть как-то взаимодействует —
+//    снимаем mute и запускаем со звуком
+function unlockAudio() {
+  birthdayMusic.muted = false;
+  birthdayMusic.volume = 0.55;
+  tryPlay();
+  ["pointerdown", "keydown", "touchstart", "scroll"].forEach((ev) =>
+    window.removeEventListener(ev, unlockAudio)
+  );
+}
+
+["pointerdown", "keydown", "touchstart", "scroll"].forEach((ev) =>
+  window.addEventListener(ev, unlockAudio, { passive: true })
+);
+
+// 4) Пробуем перезапустить, когда вкладка снова становится видимой
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && birthdayMusic.paused) tryPlay();
+});
 const messageElement = document.getElementById("message");
 const fragment = document.createDocumentFragment();
 
